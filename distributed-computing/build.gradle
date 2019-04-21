@@ -1,0 +1,5 @@
+dependencies {
+    // AWS
+    implementation group: 'software.amazon.awssdk', name: 'emr', version: "$awssdk_version"
+    implementation group: 'software.amazon.awssdk', name: 's3', version: "$awssdk_version"
+}

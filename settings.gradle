@@ -1,2 +1,3 @@
 rootProject.name = 'spark-sample'
 
+include 'domain', 'app', 'calculator', 'distributed-computing'
