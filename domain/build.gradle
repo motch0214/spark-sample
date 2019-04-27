@@ -5,6 +5,10 @@ plugins {
 dependencies {
     // Protocol Buffers
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.7.1'
+
+    // Json
+    implementation group: 'com.squareup.moshi', name: 'moshi', version: "$moshi_version"
+    implementation group: 'com.squareup.moshi', name: 'moshi-kotlin', version: "$moshi_version"
 }
 
 protobuf {

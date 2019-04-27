@@ -29,6 +29,7 @@ subprojects {
     dependencies {
         // Kotlin
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+        implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
         // Logging
         implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
