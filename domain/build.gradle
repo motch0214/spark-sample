@@ -1,0 +1,17 @@
+plugins {
+    id "com.google.protobuf" version "0.8.8"
+}
+
+dependencies {
+    // Protocol Buffers
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.7.1'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+    }
+}
+
+// proto を認識させるために必要。
+apply plugin: 'idea'
