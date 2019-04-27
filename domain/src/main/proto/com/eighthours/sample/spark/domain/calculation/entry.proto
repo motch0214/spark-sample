@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.eighthours.sample.spark.domain.calculation;
+option java_outer_classname = "EntryProtos";
+
+
+message StringEntry {
+    string target = 1;
+}
+
+message NumberEntry {
+    double target = 1;
+}
+
+
+message Entry {
+    uint64 id = 1;
+    oneof content {
+        StringEntry string = 2;
+        NumberEntry number = 3;
+    }
+}
