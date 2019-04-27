@@ -1,4 +1,7 @@
 dependencies {
     implementation project(':domain')
     implementation project(':distributed-computing')
+
+    // Parquet
+    implementation group: 'org.apache.parquet', name: 'parquet-protobuf', version: "$parquet_version"
 }
