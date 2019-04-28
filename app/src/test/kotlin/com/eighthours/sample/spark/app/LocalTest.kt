@@ -1,7 +1,9 @@
 package com.eighthours.sample.spark.app
 
 import com.eighthours.sample.spark.app.utils.ProtoParquet
+import com.eighthours.sample.spark.domain.calculation.CalculationParameters
 import com.eighthours.sample.spark.domain.calculation.EntryProtos
+import com.eighthours.sample.spark.domain.utils.toJson
 import org.junit.Test
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -10,6 +12,8 @@ import kotlin.random.Random
 class LocalTest {
 
     private val entrySize = 3
+
+    private val amplificationSize = 5;
 
     private val file = "work/input/entries.parquet"
 
@@ -27,5 +31,8 @@ class LocalTest {
                 writer.write(entry)
             }
         }
+
+        val parameters = CalculationParameters(amplificationSize, listOf(uri.toString()))
+        com.eighthours.sample.spark.calculator.main(arrayOf(toJson(parameters)))
     }
 }
