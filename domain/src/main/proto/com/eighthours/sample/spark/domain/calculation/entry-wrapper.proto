@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package com.eighthours.sample.spark.domain.calculation;
+option java_outer_classname = "EntryWrapperProtos";
+
+
+message EntryWrapper {
+    uint64 id = 1;
+    bytes body = 2;
+}

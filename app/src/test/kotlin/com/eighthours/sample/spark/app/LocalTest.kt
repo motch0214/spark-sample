@@ -3,6 +3,8 @@ package com.eighthours.sample.spark.app
 import com.eighthours.sample.spark.app.utils.ProtoParquet
 import com.eighthours.sample.spark.domain.calculation.CalculationParameters
 import com.eighthours.sample.spark.domain.calculation.EntryProtos
+import com.eighthours.sample.spark.domain.calculation.EntryWrapperProtos
+import com.eighthours.sample.spark.domain.calculation.wrapper
 import com.eighthours.sample.spark.domain.utils.toJson
 import org.junit.Test
 import java.nio.file.Files
@@ -22,13 +24,13 @@ class LocalTest {
         val uri = Paths.get(file).toUri()
 
         Files.deleteIfExists(Paths.get(file))
-        ProtoParquet.openWriter(uri, EntryProtos.Entry::class) { writer ->
+        ProtoParquet.openWriter(uri, EntryWrapperProtos.EntryWrapper::class) { writer ->
             for (i in 0..entrySize) {
                 val entry = EntryProtos.Entry.newBuilder()
                         .setId(i.toLong() + 1)
                         .setNumber(EntryProtos.NumberEntry.newBuilder().setTarget(Random.Default.nextDouble()))
                         .build()
-                writer.write(entry)
+                writer.write(entry.wrapper())
             }
         }
 
