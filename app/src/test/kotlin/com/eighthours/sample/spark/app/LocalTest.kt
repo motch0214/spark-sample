@@ -17,13 +17,15 @@ class LocalTest {
 
     private val amplificationSize = 5;
 
-    private val file = "work/input/entries.parquet"
+    private val inputFile = "work/input/entries.parquet"
+
+    private val outputDir = "work/output/results"
 
     @Test
     fun test() {
-        val uri = Paths.get(file).toUri()
+        val uri = Paths.get(inputFile).toUri()
 
-        Files.deleteIfExists(Paths.get(file))
+        Files.deleteIfExists(Paths.get(inputFile))
         ProtoParquet.openWriter(uri, EntryWrapperProtos.EntryWrapper::class) { writer ->
             for (i in 0..entrySize) {
                 val entry = EntryProtos.Entry.newBuilder()
@@ -34,7 +36,10 @@ class LocalTest {
             }
         }
 
-        val parameters = CalculationParameters(amplificationSize, listOf(uri.toString()))
+        val parameters = CalculationParameters(
+                amplificationSize = amplificationSize,
+                inputFiles = listOf(uri.toString()),
+                outputDir = Paths.get(outputDir).toUri().toString())
         com.eighthours.sample.spark.calculator.main(arrayOf(toJson(parameters)))
     }
 }
