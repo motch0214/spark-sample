@@ -19,7 +19,7 @@ class Calculator(private val spark: SparkSession) {
         input.show()
         input.printSchema()
 
-        val output = input.withColumn("result", udf(Function, DataTypes.BinaryType).apply(Column("body")))
+        val output = input.withColumn("result", udf(Function, DataTypes.BinaryType).apply(Column("entry")))
 
         output.show()
         output.printSchema()

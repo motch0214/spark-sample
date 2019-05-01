@@ -1,12 +1,14 @@
 package com.eighthours.sample.spark.domain.calculation
 
-fun EntryProtos.Entry.wrapper(): EntryWrapperProtos.EntryWrapper {
-    return EntryWrapperProtos.EntryWrapper.newBuilder()
+import com.eighthours.sample.spark.domain.calculation.wrapper.EntryWrapperProtos
+
+fun EntryProtos.Entry.wrapper(): EntryWrapperProtos.Entry {
+    return EntryWrapperProtos.Entry.newBuilder()
             .setId(this.id)
-            .setBody(this.toByteString())
+            .setEntry(this.toByteString())
             .build()
 }
 
-fun EntryWrapperProtos.EntryWrapper.unwrap(): EntryProtos.Entry {
-    return EntryProtos.Entry.parseFrom(this.body)
+fun EntryWrapperProtos.Entry.unwrap(): EntryProtos.Entry {
+    return EntryProtos.Entry.parseFrom(this.entry)
 }

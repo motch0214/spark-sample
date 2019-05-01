@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package com.eighthours.sample.spark.domain.calculation;
+package com.eighthours.sample.spark.domain.calculation.wrapper;
 option java_outer_classname = "ResultWrapperProtos";
 
 
-message ResultWrapper {
+message Result {
     uint64 id = 1;
     bytes result = 2;
 }

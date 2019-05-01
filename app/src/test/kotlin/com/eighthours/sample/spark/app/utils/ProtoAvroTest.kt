@@ -1,9 +1,9 @@
 package com.eighthours.sample.spark.app.utils
 
 import com.eighthours.sample.spark.domain.calculation.EntryProtos
-import com.eighthours.sample.spark.domain.calculation.EntryWrapperProtos
 import com.eighthours.sample.spark.domain.calculation.unwrap
 import com.eighthours.sample.spark.domain.calculation.wrapper
+import com.eighthours.sample.spark.domain.calculation.wrapper.EntryWrapperProtos
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.ByteArrayOutputStream
@@ -16,7 +16,7 @@ class ProtoAvroTest {
         // Write
         val output = ByteArrayOutputStream()
         val expected = mutableListOf<EntryProtos.Entry>()
-        ProtoAvro.Writer(output, EntryWrapperProtos.EntryWrapper::class).use { writer ->
+        ProtoAvro.Writer(output, EntryWrapperProtos.Entry::class).use { writer ->
             for (i in 1..5) {
                 val entry = EntryProtos.Entry.newBuilder()
                         .setId(i.toLong())
@@ -30,7 +30,7 @@ class ProtoAvroTest {
 
         // Read
         val actual = mutableListOf<EntryProtos.Entry>()
-        ProtoAvro.Reader(bytes, EntryWrapperProtos.EntryWrapper::class).use { reader ->
+        ProtoAvro.Reader(bytes, EntryWrapperProtos.Entry::class).use { reader ->
             while (true) {
                 val message = reader.read() ?: break
                 actual.add(message.unwrap())

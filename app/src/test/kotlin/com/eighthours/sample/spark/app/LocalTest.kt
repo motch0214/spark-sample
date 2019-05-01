@@ -2,6 +2,8 @@ package com.eighthours.sample.spark.app
 
 import com.eighthours.sample.spark.app.utils.ProtoAvro
 import com.eighthours.sample.spark.domain.calculation.*
+import com.eighthours.sample.spark.domain.calculation.wrapper.EntryWrapperProtos
+import com.eighthours.sample.spark.domain.calculation.wrapper.ResultWrapperProtos
 import com.eighthours.sample.spark.domain.utils.toJson
 import org.junit.Before
 import org.junit.Test
@@ -30,7 +32,7 @@ class LocalTest {
     fun test() {
         // Create input file
         Files.createDirectories(inputFile.parent)
-        ProtoAvro.Writer(inputFile, EntryWrapperProtos.EntryWrapper::class).use { writer ->
+        ProtoAvro.Writer(inputFile, EntryWrapperProtos.Entry::class).use { writer ->
             for (i in 1..entrySize) {
                 val entry = EntryProtos.Entry.newBuilder()
                         .setId(i.toLong())
@@ -50,7 +52,7 @@ class LocalTest {
         // Read output file
         val results = mutableListOf<ResultProtos.Result>()
         Files.list(outputDir).filter { it.toString().endsWith(".avro") }.forEach { file ->
-            ProtoAvro.Reader(file, ResultWrapperProtos.ResultWrapper::class).use { reader ->
+            ProtoAvro.Reader(file, ResultWrapperProtos.Result::class).use { reader ->
                 while (true) {
                     val result = reader.read()?.unwrap() ?: break
                     results.add(result)
