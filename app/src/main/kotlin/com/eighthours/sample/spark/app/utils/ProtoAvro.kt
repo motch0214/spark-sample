@@ -5,6 +5,7 @@ import org.apache.avro.file.*
 import org.apache.avro.protobuf.ProtobufData
 import org.apache.avro.protobuf.ProtobufDatumReader
 import org.apache.avro.protobuf.ProtobufDatumWriter
+import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.io.OutputStream
 import java.nio.file.Files
@@ -13,12 +14,18 @@ import kotlin.reflect.KClass
 
 object ProtoAvro {
 
+    private val log = LoggerFactory.getLogger(ProtoAvro::class.java)
+
     class Writer<M : Message>(output: OutputStream, messageType: KClass<M>) : Closeable {
 
         constructor(file: Path, messageType: KClass<M>) : this(Files.newOutputStream(file).buffered(), messageType)
 
         private val writer = DataFileWriter(ProtobufDatumWriter(messageType.java)).also {
             it.create(ProtobufData.get().getSchema(messageType.java), output)
+        }
+
+        init {
+            log.info("Open writer for $messageType")
         }
 
         fun write(message: M) {
@@ -37,6 +44,10 @@ object ProtoAvro {
         constructor(bytes: ByteArray, messageType: KClass<M>) : this(SeekableByteArrayInput(bytes), messageType)
 
         private val reader = DataFileReader(input, ProtobufDatumReader(messageType.java))
+
+        init {
+            log.info("Open reader for $messageType")
+        }
 
         fun read(): M? {
             if (!reader.hasNext()) {
