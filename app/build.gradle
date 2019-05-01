@@ -2,13 +2,8 @@ dependencies {
     implementation project(':domain')
     implementation project(':distributed-computing')
 
-    // Parquet
-    implementation group: 'org.apache.parquet', name: 'parquet-protobuf', version: '1.10.1'
-    implementation(group: 'org.apache.hadoop', name: 'hadoop-common', version: '2.6.5') {
-        exclude module: 'slf4j-log4j12'
-        exclude module: 'log4j'
-    }
-    runtimeOnly group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.26'
+    // Avro
+    implementation group: 'org.apache.avro', name: 'avro-protobuf', version: '1.8.2'
 
     // for Test
     testImplementation project(':calculator')
@@ -17,6 +12,7 @@ dependencies {
         exclude group: 'com.fasterxml.jackson.core'
         exclude module: 'jackson-module-scala_2.12'
     }
+    testRuntimeOnly group: 'org.apache.spark', name: 'spark-avro_2.12', version: "$spark_version"
     testRuntimeOnly group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.12', version: '2.9.8'
 }
 
