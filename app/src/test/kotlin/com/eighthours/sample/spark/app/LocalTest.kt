@@ -6,8 +6,9 @@ import com.eighthours.sample.spark.domain.calculation.EntryProtos
 import com.eighthours.sample.spark.domain.calculation.EntryWrapperProtos
 import com.eighthours.sample.spark.domain.calculation.wrapper
 import com.eighthours.sample.spark.domain.utils.toJson
+import org.apache.commons.io.FileUtils
+import org.junit.Before
 import org.junit.Test
-import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.random.Random
 
@@ -21,11 +22,15 @@ class LocalTest {
 
     private val outputDir = "work/output/results"
 
+    @Before
+    fun cleanup() {
+        FileUtils.deleteDirectory(Paths.get("work").toFile())
+    }
+
     @Test
     fun test() {
         val uri = Paths.get(inputFile).toUri()
 
-        Files.deleteIfExists(Paths.get(inputFile))
         ProtoParquet.openWriter(uri, EntryWrapperProtos.EntryWrapper::class) { writer ->
             for (i in 0..entrySize) {
                 val entry = EntryProtos.Entry.newBuilder()
