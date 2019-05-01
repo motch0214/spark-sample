@@ -1,14 +1,14 @@
 package com.eighthours.sample.spark.app
 
-import com.eighthours.sample.spark.app.utils.ProtoParquet
+import com.eighthours.sample.spark.app.utils.ProtoAvro
 import com.eighthours.sample.spark.domain.calculation.CalculationParameters
 import com.eighthours.sample.spark.domain.calculation.EntryProtos
 import com.eighthours.sample.spark.domain.calculation.EntryWrapperProtos
 import com.eighthours.sample.spark.domain.calculation.wrapper
 import com.eighthours.sample.spark.domain.utils.toJson
-import org.apache.commons.io.FileUtils
 import org.junit.Before
 import org.junit.Test
+import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.random.Random
 
@@ -18,20 +18,24 @@ class LocalTest {
 
     private val amplificationSize = 5;
 
-    private val inputFile = "work/input/entries.parquet"
+    private val inputFile = Paths.get("work/input/entries.avro")
 
-    private val outputDir = "work/output/results"
+    private val outputDir = Paths.get("work/output/results")
 
     @Before
     fun cleanup() {
-        FileUtils.deleteDirectory(Paths.get("work").toFile())
+        Files.walk(Paths.get("work"))
+                .sorted(Comparator.reverseOrder())
+                .forEachOrdered {
+                    Files.delete(it)
+                }
     }
 
     @Test
     fun test() {
-        val uri = Paths.get(inputFile).toUri()
+        Files.createDirectories(inputFile.parent)
 
-        ProtoParquet.openWriter(uri, EntryWrapperProtos.EntryWrapper::class) { writer ->
+        ProtoAvro.Writer(inputFile, EntryWrapperProtos.EntryWrapper::class).use { writer ->
             for (i in 0..entrySize) {
                 val entry = EntryProtos.Entry.newBuilder()
                         .setId(i.toLong() + 1)
@@ -43,8 +47,8 @@ class LocalTest {
 
         val parameters = CalculationParameters(
                 amplificationSize = amplificationSize,
-                inputFiles = listOf(uri.toString()),
-                outputDir = Paths.get(outputDir).toUri().toString())
+                inputFiles = listOf(inputFile.toUri().toString()),
+                outputDir = outputDir.toUri().toString())
         com.eighthours.sample.spark.calculator.main(arrayOf(toJson(parameters)))
     }
 }

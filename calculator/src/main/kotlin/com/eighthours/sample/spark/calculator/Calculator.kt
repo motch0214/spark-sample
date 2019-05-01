@@ -14,9 +14,9 @@ import scala.Tuple2
 class Calculator(private val spark: SparkSession) {
 
     fun calculate(parameters: CalculationParameters) {
-        spark.read().parquet(*parameters.inputFiles.toTypedArray())
+        spark.read().format("avro").load(*parameters.inputFiles.toTypedArray())
                 .map(Mapper, Encoders.tuple(Encoders.LONG(), Encoders.BINARY()))
-                .write().parquet(parameters.outputDir)
+                .write().format("avro").save(parameters.outputDir)
     }
 }
 

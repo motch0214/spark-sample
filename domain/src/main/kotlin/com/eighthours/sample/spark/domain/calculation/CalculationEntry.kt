@@ -6,3 +6,7 @@ fun EntryProtos.Entry.wrapper(): EntryWrapperProtos.EntryWrapper {
             .setBody(this.toByteString())
             .build()
 }
+
+fun EntryWrapperProtos.EntryWrapper.unwrap(): EntryProtos.Entry {
+    return EntryProtos.Entry.parseFrom(this.body)
+}
