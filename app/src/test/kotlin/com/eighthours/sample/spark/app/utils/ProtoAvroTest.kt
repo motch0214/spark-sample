@@ -17,9 +17,9 @@ class ProtoAvroTest {
         val output = ByteArrayOutputStream()
         val expected = mutableListOf<EntryProtos.Entry>()
         ProtoAvro.Writer(output, EntryWrapperProtos.EntryWrapper::class).use { writer ->
-            for (i in 0..5) {
+            for (i in 1..5) {
                 val entry = EntryProtos.Entry.newBuilder()
-                        .setId(i.toLong() + 1)
+                        .setId(i.toLong())
                         .setNumber(EntryProtos.NumberEntry.newBuilder().setTarget(exp(i.toDouble())))
                         .build()
                 writer.write(entry.wrapper())
