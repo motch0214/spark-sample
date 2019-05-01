@@ -47,8 +47,8 @@ class LocalTest {
 
         val parameters = CalculationParameters(
                 amplificationSize = amplificationSize,
-                inputFiles = listOf(inputFile.toUri().toString()),
-                outputDir = outputDir.toUri().toString())
+                inputFiles = listOf(inputFile.toUri()),
+                outputDir = outputDir.toUri())
         com.eighthours.sample.spark.calculator.main(arrayOf(toJson(parameters)))
     }
 }

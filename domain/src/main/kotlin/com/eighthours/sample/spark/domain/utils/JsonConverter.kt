@@ -1,10 +1,12 @@
 package com.eighthours.sample.spark.domain.utils
 
+import com.eighthours.sample.spark.domain.utils.json.UriJsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
+        .add(UriJsonAdapter.Factory)
         .build()
 
 inline fun <reified T> toJson(value: T): String {

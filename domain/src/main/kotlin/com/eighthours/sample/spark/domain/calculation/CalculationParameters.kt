@@ -1,7 +1,9 @@
 package com.eighthours.sample.spark.domain.calculation
 
+import java.net.URI
+
 data class CalculationParameters(
         val amplificationSize: Int,
-        val inputFiles: List<String>,
-        val outputDir: String
+        val inputFiles: List<URI>,
+        val outputDir: URI
 )
