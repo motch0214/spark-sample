@@ -2,6 +2,8 @@ package com.eighthours.sample.spark.domain.calculation
 
 import com.eighthours.sample.spark.domain.calculation.wrapper.EntryWrapperProtos
 
+const val ENTRY_FIELD = "entry"
+
 fun EntryProtos.Entry.wrapper(): EntryWrapperProtos.Entry {
     return EntryWrapperProtos.Entry.newBuilder()
             .setId(this.id)

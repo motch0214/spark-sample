@@ -1,15 +1,12 @@
 package com.eighthours.sample.spark.calculator
 
-import com.eighthours.sample.spark.domain.calculation.CalculationParameters
-import com.eighthours.sample.spark.domain.calculation.EntryProtos
+import com.eighthours.sample.spark.domain.calculation.*
 import com.eighthours.sample.spark.domain.calculation.EntryProtos.Entry.ContentCase.NUMBER
 import com.eighthours.sample.spark.domain.calculation.EntryProtos.Entry.ContentCase.STRING
-import com.eighthours.sample.spark.domain.calculation.ResultProtos
-import org.apache.spark.sql.Column
+import org.apache.spark.api.java.function.FlatMapFunction
+import org.apache.spark.sql.Encoders
+import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.api.java.UDF1
-import org.apache.spark.sql.functions.udf
-import org.apache.spark.sql.types.DataTypes
 
 class Calculator(private val spark: SparkSession) {
 
@@ -19,7 +16,8 @@ class Calculator(private val spark: SparkSession) {
         input.show()
         input.printSchema()
 
-        val output = input.withColumn("result", udf(Function, DataTypes.BinaryType).apply(Column("entry")))
+        val output = input.flatMap(Calculation(parameters.amplificationSize), Encoders.BINARY())
+                .withColumnRenamed("value", RESULT_FIELD)
 
         output.show()
         output.printSchema()
@@ -28,24 +26,28 @@ class Calculator(private val spark: SparkSession) {
     }
 }
 
-object Function : UDF1<ByteArray, ByteArray> {
+typealias ResultBytes = ByteArray
 
-    override fun call(bytes: ByteArray): ByteArray {
-        val entry = EntryProtos.Entry.parseFrom(bytes)
-        val result = calculate(entry)
-        return result.toByteArray()
+class Calculation(private val amplificationSize: Int) : FlatMapFunction<Row, ResultBytes> {
+
+    override fun call(row: Row): Iterator<ResultBytes> {
+        val entry = EntryProtos.Entry.parseFrom(row.getAs<ByteArray>(ENTRY_FIELD))
+        val results = calculate(entry)
+        return results.map { it.toByteArray() }.iterator()
     }
 
-    private fun calculate(entry: EntryProtos.Entry): ResultProtos.Result {
+    private fun calculate(entry: EntryProtos.Entry): List<ResultProtos.Result> {
         val value = when (entry.contentCase) {
             STRING -> "${entry.string.target}!!!"
             NUMBER -> "${entry.number.target}???"
             else -> throw IllegalArgumentException()
         }
 
-        return ResultProtos.Result.newBuilder()
-                .setId(entry.id)
-                .setValue(value)
-                .build()
+        return (1..amplificationSize).map { i ->
+            ResultProtos.Result.newBuilder()
+                    .setId(entry.id)
+                    .setValue("$value [$i]")
+                    .build()
+        }
     }
 }
