@@ -1,5 +1,6 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
+    id 'jp.classmethod.aws.s3' version '0.39'
 }
 
 dependencies {
@@ -7,4 +8,10 @@ dependencies {
 
     // Spark
     compileOnly group: 'org.apache.spark', name: 'spark-sql_2.12', version: "$spark_version"
+}
+
+task publishJar(type: jp.classmethod.aws.gradle.s3.SyncTask) {
+    dependsOn shadowJar
+    bucketName "$calculator_jar_bucket"
+    source file("$buildDir/libs/${shadowJar.archiveFileName.orNull}")
 }

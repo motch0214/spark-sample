@@ -2,6 +2,9 @@ dependencies {
     implementation project(':domain')
     implementation project(':distributed-computing')
 
+    // AWS
+    implementation group: 'software.amazon.awssdk', name: 's3', version: "$awssdk_version"
+
     // Avro
     implementation group: 'org.apache.avro', name: 'avro-protobuf', version: '1.8.2'
 
