@@ -28,6 +28,12 @@ class LocalTest {
         }
     }
 
+    @Before
+    fun setupProperties() {
+        System.setProperty("spark.app.name", "spark-sample-test")
+        System.setProperty("spark.master", "local")
+    }
+
     @Test
     fun test() {
         // Create input file

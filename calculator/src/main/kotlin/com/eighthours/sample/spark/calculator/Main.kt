@@ -14,12 +14,13 @@ private val log = LoggerFactory.getLogger(Main::class.java)
 fun main(args: Array<String>) {
     log.info("Run application: args=${Arrays.toString(args)}")
 
-    // TODO
-    val config = SparkConf()
-            .setAppName("spark-sample-test")
-            .setMaster("local")
+    if (args.isEmpty()) {
+        throw IllegalArgumentException("usage: CalculationParameters")
+    }
 
-    log.debug("Spark configuration\n\t${config.toDebugString().replace("\n", "\n\t")}")
+    // Load configurations from system properties
+    val config = SparkConf()
+    log.info("Spark configuration\n\t${config.toDebugString().replace("\n", "\n\t")}")
 
     val spark = SparkSession.builder().config(config).getOrCreate()
     Calculator(spark).calculate(fromJson(args[0])!!)
