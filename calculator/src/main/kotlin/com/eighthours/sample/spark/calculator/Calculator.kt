@@ -2,7 +2,6 @@ package com.eighthours.sample.spark.calculator
 
 import com.eighthours.sample.spark.domain.calculation.*
 import com.eighthours.sample.spark.domain.calculation.EntryProtos.Entry.ContentCase.NUMBER
-import com.eighthours.sample.spark.domain.calculation.EntryProtos.Entry.ContentCase.STRING
 import org.apache.spark.api.java.function.FlatMapFunction
 import org.apache.spark.sql.Encoders
 import org.apache.spark.sql.Row
@@ -38,15 +37,14 @@ class Calculation(private val amplificationSize: Int) : FlatMapFunction<Row, Res
 
     private fun calculate(entry: EntryProtos.Entry): List<ResultProtos.Result> {
         val value = when (entry.contentCase) {
-            STRING -> "${entry.string.target}!!!"
-            NUMBER -> "${entry.number.target}???"
+            NUMBER -> entry.number.target
             else -> throw IllegalArgumentException()
         }
 
         return (1..amplificationSize).map { i ->
             ResultProtos.Result.newBuilder()
                     .setId(entry.id)
-                    .setValue("$value [$i]")
+                    .setValue("${value * i}")
                     .build()
         }
     }

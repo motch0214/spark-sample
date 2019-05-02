@@ -5,11 +5,11 @@ import com.eighthours.sample.spark.domain.calculation.*
 import com.eighthours.sample.spark.domain.calculation.wrapper.EntryWrapperProtos
 import com.eighthours.sample.spark.domain.calculation.wrapper.ResultWrapperProtos
 import com.eighthours.sample.spark.domain.utils.toJson
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.random.Random
 
 class LocalTest {
 
@@ -42,7 +42,7 @@ class LocalTest {
             for (i in 1..entrySize) {
                 val entry = EntryProtos.Entry.newBuilder()
                         .setId(i.toLong())
-                        .setNumber(EntryProtos.NumberEntry.newBuilder().setTarget(Random.Default.nextDouble()))
+                        .setNumber(EntryProtos.NumberEntry.newBuilder().setTarget(100.0 + i))
                         .build()
                 writer.write(entry.wrapper())
             }
@@ -66,6 +66,15 @@ class LocalTest {
             }
         }
 
-        println(results)
+        // Assert results
+        val expected = (1..entrySize).flatMap { id ->
+            (1..amplificationSize).map { index ->
+                ResultProtos.Result.newBuilder()
+                        .setId(id.toLong())
+                        .setValue("${(100.0 + id) * index}")
+                        .build()
+            }
+        }
+        assertThat(results).isEqualTo(expected)
     }
 }
